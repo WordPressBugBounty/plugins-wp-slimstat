@@ -3,7 +3,7 @@
  * Plugin Name: SlimStat Analytics
  * Plugin URI: https://wp-slimstat.com/
  * Description: The leading web analytics plugin for WordPress
- * Version: 5.3.1
+ * Version: 5.3.5
  * Author: Jason Crouse, VeronaLabs
  * Text Domain: wp-slimstat
  * Domain Path: /languages
@@ -24,7 +24,7 @@ if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
 }
 
 // Set the plugin version and directory
-define('SLIMSTAT_ANALYTICS_VERSION', '5.3.1');
+define('SLIMSTAT_ANALYTICS_VERSION', '5.3.5');
 define('SLIMSTAT_FILE', __FILE__);
 define('SLIMSTAT_DIR', __DIR__);
 define('SLIMSTAT_URL', plugins_url('', __FILE__));
@@ -276,7 +276,7 @@ class wp_slimstat
                         $id = self::slimtrack();
                     } // .. or outbound link? If so, update the pageview with the new info
                     elseif ($parsed_resource['host'] != $site_host) {
-                        self::$stat['outbound_resource'] = $resource;
+                        self::$stat['outbound_resource'] = sanitize_url($resource);
 
                         // Visitor is still on this page, record the timestamp in the corresponding field
                         self::$stat['dt_out'] = self::date_i18n('U');
@@ -999,9 +999,9 @@ class wp_slimstat
                             case 'post_link_no_qs':
                                 $post_id = url_to_postid($a_result['resource']);
                                 if ($post_id > 0) {
-                                    $output[$result_idx][$a_column] .= sprintf("<a href='%s'>", $a_result[ 'resource' ]) . get_the_title($post_id) . '</a>';
+                                    $output[$result_idx][$a_column] .= sprintf("<a href='%s'>", esc_url( $a_result[ 'resource' ] )) . esc_html( get_the_title($post_id) ) . '</a>';
                                 } else {
-                                    $output[$result_idx][$a_column] .= sprintf("<a href='%s'>%s</a>", $a_result[ 'resource' ], $a_result[ 'resource' ]);
+                                    $output[$result_idx][$a_column] .= sprintf("<a href='%s'>%s</a>", esc_url( $a_result[ 'resource' ] ), esc_html( $a_result[ 'resource' ] ));
                                 }
                                 break;
 
